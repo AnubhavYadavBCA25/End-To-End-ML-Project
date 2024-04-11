@@ -6,7 +6,7 @@ def error_message_detail(error,error_detail:sys):
     error_message = "Error occured in python script name [{0}] at line number [{1}] with error message [{2}]".format(exc_tb.tb_frame.f_code.co_filename,exc_tb.tb_lineno,str(error))
     return error_message
 
-class CustomeException(Exception):
+class CustomException(Exception):
     def __init__(self,error_message,error_detail:sys):
         super().__init__(error_message)
         self.error = error_message
