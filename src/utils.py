@@ -4,6 +4,7 @@ import pandas as pd
 import numpy as np
 import dill 
 from sklearn.metrics import r2_score
+from sklearn.model_selection import GridSearchCV
 
 from src.exception import CustomException
 
@@ -19,7 +20,7 @@ def save_object(obj, file_path):
     except CustomException as e:
         raise CustomException(e,sys)
     
-def evaluate_models(models,X_train,y_train,X_test,y_test):
+def evaluate_models(models,X_train,y_train,X_test,y_test,params):
     '''
     This function is used to evaluate the models based on the training and testing data.
     '''
@@ -27,7 +28,13 @@ def evaluate_models(models,X_train,y_train,X_test,y_test):
         model_report = {}
         for i in range(len(list(models))):
             model = list(models.values())[i]
-            model.fit(X_train,y_train)      # Training model
+            para=params[list(models.keys())[i]]
+
+            gs = GridSearchCV(model,para,cv=3)
+            gs.fit(X_train,y_train)
+            model.set_params(**gs.best_params_)
+            model.fit(X_train,y_train)
+            # model.fit(X_train,y_train)      # Training model
 
             y_train_pred = model.predict(X_train)
             y_test_pred = model.predict(X_test)
